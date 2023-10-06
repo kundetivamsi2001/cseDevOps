@@ -7,7 +7,7 @@ pipeline {
               bat "mvn clean"
             }
         }
-    stages {
+  
         stage('Build') {
             steps {
                  echo "project Building..."
