@@ -4,26 +4,34 @@ pipeline {
         stage('Clean') {
             steps {
                echo "project cleaning..."
-              sh "mvn clean"
+              sh "clean"
             }
         }
   
-        stage('Build') {
+           stage('Build') {
             steps {
-                 echo "project Building..."
-                 sh "mvn compile"
+                sh 'make' 
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true 
             }
         }
-        stage('Test') {
+        
+         stage('Test') {
             steps {
-                 echo "project Testing..."
-                sh "mvn test"
+                /* `make check` returns non-zero on test failures,
+                * using `true` to allow the Pipeline to continue nonetheless
+                */
+                sh 'make check || true' 
+                junit '**/target/*.xml' 
             }
         }
         stage('Deploy') {
+            when {
+              expression {
+                currentBuild.result == null || currentBuild.result == 'SUCCESS' 
+              }
+            }
             steps {
-                echo "project Deploying..."
-              sh "mvn install"
+                sh 'make publish'
             }
         }
     }
