@@ -1,12 +1,7 @@
 pipeline {
     agent any
  stages {
-        stage('Clean') {
-            steps {
-               echo "project cleaning..."
-              sh "clean"
-            }
-        }
+       
   
            stage('Build') {
             steps {
